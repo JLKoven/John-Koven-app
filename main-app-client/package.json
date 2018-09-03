@@ -1,0 +1,23 @@
+{
+  "name": "notes-app-client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "aws-amplify": "^1.0.4",
+    "react": "^16.4.1",
+    "react-bootstrap": "^0.32.1",
+    "react-dom": "^16.4.1",
+    "react-router-bootstrap": "^0.24.4",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "1.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "predeploy": "npm run build",
+    "deploy": "aws s3 sync build/ s3://aws-reactdynamodbjohnkoven-client --delete",
+    "postdeploy": "aws cloudfront create-invalidation --distribution-id E1V3EAQBIC9SFE --paths '/*' && aws cloudfront create-invalidation --distribution-id E31CEHRBT7TQHD --paths '/*'",
+    "eject": "react-scripts eject"
+  }
+}

@@ -1,0 +1,8 @@
+//    <AuthenticatedRoute path="/noteHub" exact component={NoteHub} props={childProps} />
+//    <AuthenticatedRoute path="/notes/new" exact component={NewNote} props={childProps} />
+//    <AuthenticatedRoute path="/notes/:id" exact component={Notes} props={childProps} />
+//    <AuthenticatedRoute path="/flashcards" exact component={FlashcardDeckHub} props={childProps} />
+//    <AuthenticatedRoute path="/flashcards/new" exact component={NewDeck} props={childProps} />
+//    <AuthenticatedRoute path="/flashcards/:deckId" exact component={FlashcardDecks} props={childProps} />
+//    <AuthenticatedRoute path="/flashcards/:deckId/new" exact component={NewFlashcard} props={childProps} />
+//    <AuthenticatedRoute path="/flashcards/:deckId/:cardId" exact component={Flashcards} props={childProps} />
