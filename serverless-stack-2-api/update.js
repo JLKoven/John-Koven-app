@@ -3,7 +3,6 @@ import { success, failure } from "./libs/response-lib";
 
 export async function main(event, context, callback) {
   const data = JSON.parse(event.body);
-
   const params = {
     TableName: "notes",
     // 'Key' defines the partition key and sort key of the item to be updated

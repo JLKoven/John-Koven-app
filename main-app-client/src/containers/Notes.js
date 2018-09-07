@@ -14,14 +14,14 @@ export default class Notes extends Component {
     this.file = null;
 
     this.state = {
-  isLoading: null,
-  isDeleting: null,
-  note: null,
-  frontOfCard: "",
-  backOfCard: "",
-  content: "",
-  attachmentURL: null
-};
+      isLoading: null,
+      isDeleting: null,
+      note: null,
+      frontOfCard: "",
+      backOfCard: "",
+      content: "",
+      attachmentURL: null
+    };
   }
 
 
@@ -32,13 +32,8 @@ export default class Notes extends Component {
       const note = await this.getNote();
       const { content, attachment } = note;
 
-      console.log(note.content);
-      console.log(isJSON(note.content));
-
       const frontOfCard = (isJSON(note.content)) ? JSON.parse(note.content).front : note.content;
       const backOfCard = (isJSON(note.content)) ? JSON.parse(note.content).back : note.content;
-//JSON.parse(note.content).front
-//JSON.parse(note.content).back
 
       if (attachment) {
         attachmentURL = await Storage.vault.get(attachment);
@@ -61,137 +56,131 @@ export default class Notes extends Component {
   }
 
   validateForm() {
-  return this.state.content.length > 0;
-}
-
-formatFilename(str) {
-  return str.replace(/^\w+-/, "");
-}
-
-
-handleChange = event => {
-  this.setState({
-    [event.target.id]: event.target.value
-  });
-}
-
-handleFileChange = event => {
-  this.file = event.target.files[0];
-}
-
-saveNote(note) {
-  return API.put("notes", `/notes/${this.props.match.params.id}`, {
-    body: note
-  });
-}
-
-handleSubmit = async event => {
-  let attachment;
-
-  console.log("updating note there may be an attachment");
-
-
-  event.preventDefault();
-
-  if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
-    alert(`Please pick a file smaller than ${config.MAX_ATTACHMENT_SIZE/1000000} MB.`);
-    return;
+    return this.state.content.length > 0;
   }
 
-  this.setState({ isLoading: true });
+  formatFilename(str) {
+    return str.replace(/^\w+-/, "");
+  }
 
-  try {
-    if (this.file) {
-      attachment = await s3Upload(this.file);
+
+  handleChange = event => {
+    this.setState({
+      [event.target.id]: event.target.value
+    });
+  }
+
+  handleFileChange = event => {
+    this.file = event.target.files[0];
+  }
+
+  saveNote(note) {
+    return API.put("notes", `/notes/${this.props.match.params.id}`, {
+      body: note
+    });
+  }
+
+  handleSubmit = async event => {
+    let attachment;
+
+
+    event.preventDefault();
+
+    if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
+      alert(`Please pick a file smaller than ${config.MAX_ATTACHMENT_SIZE/1000000} MB.`);
+      return;
     }
 
-    let newVar = {};
-    //this.state.content;
-    newVar["front"] = this.state.frontOfCard;
-    newVar["back"] = this.state.backOfCard;
-    let newVarStringify = JSON.stringify(newVar);
-    console.log("newvarstringify is ");
-    console.log(newVarStringify);
-    console.log("");
+    this.setState({ isLoading: true });
 
-    await this.saveNote({
-      content: newVarStringify,
-      attachment: attachment || this.state.note.attachment
-    });
-    this.props.history.push("/");
-  } catch (e) {
-    alert(e);
-    this.setState({ isLoading: false });
-  }
-}
+    try {
+      if (this.file) {
+        attachment = await s3Upload(this.file);
+      }
 
-deleteNote() {
-  return API.del("notes", `/notes/${this.props.match.params.id}`);
-}
+      let newVar = {};
+      newVar["front"] = this.state.frontOfCard;
+      newVar["back"] = this.state.backOfCard;
+      let newVarStringify = JSON.stringify(newVar);
 
-handleDelete = async event => {
-  event.preventDefault();
-
-  const confirmed = window.confirm(
-    "Are you sure you want to delete this note?"
-  );
-
-  if (!confirmed) {
-    return;
+      await this.saveNote({
+        content: newVarStringify,
+        attachment: attachment || this.state.note.attachment
+      });
+      this.props.history.push("/");
+    } catch (e) {
+      alert(e);
+      this.setState({ isLoading: false });
+    }
   }
 
-  this.setState({ isDeleting: true });
-
-  try {
-    await this.deleteNote();
-    this.props.history.push("/");
-  } catch (e) {
-    alert(e);
-    this.setState({ isDeleting: false });
+  deleteNote() {
+    return API.del("notes", `/notes/${this.props.match.params.id}`);
   }
-}
 
-render() {
-  return (
-    <div className="Notes">
+  handleDelete = async event => {
+    event.preventDefault();
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this note?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.setState({ isDeleting: true });
+
+    try {
+      await this.deleteNote();
+      this.props.history.push("/");
+    } catch (e) {
+      alert(e);
+      this.setState({ isDeleting: false });
+    }
+  }
+
+  render() {
+    return (
+      <div className="Notes">
       {this.state.note &&
         <form onSubmit={this.handleSubmit}>
 
         <FormGroup controlId="frontOfCard">
-          <FormControl
-            onChange={this.handleChange}
-            value={this.state.frontOfCard}
-            componentClass="textarea"
-          />
+        <FormControl
+        onChange={this.handleChange}
+        value={this.state.frontOfCard}
+        componentClass="textarea"
+        />
         </FormGroup>
 
         <FormGroup controlId="backOfCard">
-          <FormControl
-            onChange={this.handleChange}
-            value={this.state.backOfCard}
-            componentClass="textarea"
-          />
+        <FormControl
+        onChange={this.handleChange}
+        value={this.state.backOfCard}
+        componentClass="textarea"
+        />
         </FormGroup>
 
-          {this.state.note.attachment &&
-            <FormGroup>
-              <ControlLabel>Attachment</ControlLabel>
-              <FormControl.Static>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={this.state.attachmentURL}
-                >
-                  {this.formatFilename(this.state.note.attachment)}
-                </a>
-              </FormControl.Static>
-            </FormGroup>}
+        {this.state.note.attachment &&
+          <FormGroup>
+          <ControlLabel>Attachment</ControlLabel>
+          <FormControl.Static>
+          <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={this.state.attachmentURL}
+          >
+          {this.formatFilename(this.state.note.attachment)}
+          </a>
+          </FormControl.Static>
+          </FormGroup>}
           <FormGroup controlId="file">
-            {!this.state.note.attachment &&
-              <ControlLabel>Attachment</ControlLabel>}
+          {!this.state.note.attachment &&
+            <ControlLabel>Attachment</ControlLabel>}
             <FormControl onChange={this.handleFileChange} type="file" />
-          </FormGroup>
-          <LoaderButton
+            </FormGroup>
+            <LoaderButton
             block
             bsStyle="primary"
             bsSize="large"
@@ -200,8 +189,8 @@ render() {
             isLoading={this.state.isLoading}
             text="Save"
             loadingText="Saving…"
-          />
-          <LoaderButton
+            />
+            <LoaderButton
             block
             bsStyle="danger"
             bsSize="large"
@@ -209,9 +198,9 @@ render() {
             onClick={this.handleDelete}
             text="Delete"
             loadingText="Deleting…"
-          />
-        </form>}
-    </div>
-  );
-}
-}
+            />
+            </form>}
+            </div>
+          );
+        }
+      }
