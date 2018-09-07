@@ -55,13 +55,9 @@ export default class NewNote extends Component {
       : null;
 
       let newVar = {};
-      //this.state.content;
       newVar["front"] = this.state.frontOfCard;
       newVar["back"] = this.state.backOfCard;
       let newVarStringify = JSON.stringify(newVar);
-      console.log("newvarstringify is ");
-      console.log(newVarStringify);
-      console.log("");
 
     await this.createNote({
       attachment,

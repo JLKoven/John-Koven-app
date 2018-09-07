@@ -72,8 +72,6 @@ saveGeneral_Stat(General_Stat) {
 handleSubmit = async event => {
   let attachment;
 
-  console.log("updating General_Stat there may be an attachment");
-
 
   event.preventDefault();
 
