@@ -19,7 +19,7 @@ custom:
   # Load our webpack config
   webpack:
     webpackConfig: ./webpack.config.js
-    includeModules: true  
+    includeModules: true
 
 provider:
   name: aws
@@ -116,6 +116,9 @@ functions:
           authorizer: aws_iam
 
 # Create our resources with separate CloudFormation templates
+# Create our resources with separate CloudFormation templates
 resources:
   # DynamoDB
   - ${file(resources/dynamodb-table.yml)}
+  # S3
+  - ${file(resources/s3-bucket.yml)}
